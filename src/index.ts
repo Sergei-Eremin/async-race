@@ -19,3 +19,15 @@ generate.generateGarage(control, race, carTrack, api, app);
 generate.generateGarageListeners(carTrack, api, app);
 race.generateRaceListeners(carTrack, api);
 carTrack.createTrack(api.getCars<ICar[]>('http://127.0.0.1:3000/garage', app.garagePage));
+
+// (async () => {
+//     let res = await api.startEngine('1');
+//     console.log(res, 'завели двигатель');
+//     let dr = await api.startDrive('1');
+//     console.log(dr, 'ну чё народ, погнали нахуй?');
+//     let stop = await api.stopEngine('1');
+//     console.log(stop, 'остановили');
+// })();
+// setTimeout(()=>{
+//     carTrack.drive('5', "3");
+// } ,2000)

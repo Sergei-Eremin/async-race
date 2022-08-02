@@ -22,6 +22,7 @@ export class Generate {
     control.generateControl(race, carTrack);
     carTrack.generateTrackWrapper(api, app);
     carTrack.paginationHandler(api, app);
+    carTrack.carHandler(api);
   }
   generateGarageListeners(carTrack: CarTrack, api: API, app: App) {
     const trackList = document.querySelector('.trackList');

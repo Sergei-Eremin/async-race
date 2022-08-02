@@ -17,9 +17,21 @@ export class API {
             });
         return res;
     }
-    startEngine(id: string) {
-        const response = fetch(`http://127.0.0.1:3000/garage?id=${id}&status=started`, {
-          
-        });
+    async startEngine(id: string) {
+        return fetch(`http://127.0.0.1:3000/engine?id=${id}&status=started`, {
+            method: 'PATCH',
+        }).then((data) => data.json());
+    }
+    async stopEngine(id: string) {
+        return await fetch(`http://127.0.0.1:3000/engine?id=${id}&status=stopped`, {
+            method: 'PATCH',
+        }).then((data) => data.json());
+    }
+    async startDrive(id: string) {
+        return await fetch(`http://127.0.0.1:3000/engine?id=${id}&status=drive`, {
+            method: 'PATCH',
+        })
+            .then((data) => data.json())
+            .catch((er) => console.log(er));
     }
 }
