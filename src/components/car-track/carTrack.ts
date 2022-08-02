@@ -1,34 +1,122 @@
 import { ICar } from '../../types';
+import { API } from '../api/api';
+import { App } from '../app/app';
+
 export class CarTrack {
-    createInputs() {
-        const block = `
+  createInputs() {
+    const block = `
         <div class="field__create create">
           <input class="create__input" type="text">
           <input class="create__input" type="color">
           <button>create</button>
         </div>
         `;
-        return block;
-    }
-    updateInputs() {
-        const block = `
+    return block;
+  }
+  updateInputs() {
+    const block = `
         <div class="field__update update">
-          <input class="update__input" type="text">
-          <input class="update__input" type="color">
-          <button>update</button>
+          <input class="update__input" type="text" disabled>
+          <input class="update__input" type="color" disabled>
+          <button disabled>update</button>
         </div>
         `;
-        return block;
+    return block;
+  }
+  generateTrackWrapper(api: API, app: App) {
+    const main = document.createElement('main');
+    main.classList.add('garage');
+    (document.querySelector('.fields') as HTMLElement).after(main);
+    const trackList = document.createElement('div') as HTMLElement;
+    const h1 = document.createElement('h1');
+    const getGarageAmount = async () => {
+      const garageAmount = await api.getAmountCars('http://127.0.0.1:3000/garage');
+      h1.innerHTML = `Garage (${garageAmount})`;
+    };
+    getGarageAmount();
+    trackList.classList.add('trackList');
+    const page = document.createElement('h2');
+    page.innerHTML = `Page <span class="page__number">${app.garagePage}</span>`;
+    const pagination = document.createElement('div');
+    pagination.innerHTML = `
+        <button disabled class="pagination__prev">prev</button>
+        <button class="pagination__next">next</button>
+        `;
+    pagination.classList.add('pagination');
+    main.append(page, h1, trackList, pagination);
+  }
+  paginationHandler(api: API, app: App) {
+    const pagination = document.querySelector('.pagination');
+    pagination?.addEventListener('click', (event) => {
+      const btnPrev = document.querySelector('.pagination__prev') as HTMLButtonElement;
+      const btnNext = document.querySelector('.pagination__next') as HTMLButtonElement;
+      const target = event.target as HTMLElement;
+      if (target.tagName === 'BUTTON') {
+        if (target.className === 'pagination__prev') {
+          if (btnPrev.disabled) {
+            alert('how you click disabled button??');
+          } else {
+            app.garagePage -= 1;
+          }
+        }
+        if (target.className === 'pagination__next') {
+          if (btnNext.disabled) {
+            alert('how you click disabled button??');
+          } else {
+            app.garagePage += 1;
+          }
+        }
+        this.createTrack(api.getCars<ICar[]>('http://127.0.0.1:3000/garage', app.garagePage));
+      }
+      this.paginationClickableButtons(app, api);
+      this.updatePageNumber(app);
+    });
+  }
+  updatePageNumber(app: App) {
+    const page = document.querySelector('.page__number') as HTMLSpanElement;
+    page.innerText = String(app.garagePage);
+  }
+  paginationClickableButtons(app: App, api: API) {
+    const btnPrev = document.querySelector('.pagination__prev') as HTMLButtonElement;
+    const btnNext = document.querySelector('.pagination__next') as HTMLButtonElement;
+    if (app.garagePage === 1) {
+      btnPrev.disabled = true;
+    } else {
+      btnPrev.disabled = false;
     }
+    (async () => {
+      const amount = await api.getAmountCars('http://127.0.0.1:3000/garage');
+      const pages = Math.ceil(amount / app.tracksOnPage);
+      if (pages > app.garagePage) {
+        btnNext.disabled = false;
+      } else {
+        btnNext.disabled = true;
+      }
+      if (pages < app.garagePage) {
+        app.garagePage -= 1;
+        this.createTrack(api.getCars<ICar[]>('http://127.0.0.1:3000/garage', app.garagePage));
+        this.updatePageNumber(app);
+      }
+    })();
+  }
+  updateGarageAmount(api: API) {
+    const h1 = document.querySelector('h1') as HTMLElement;
+    (async () => {
+      const garageAmount = await api.getAmountCars('http://127.0.0.1:3000/garage');
+      h1.innerHTML = `Garage (${garageAmount})`;
+    })();
+  }
 
-    markupTrack(data: ICar) {
-        const { name, color, id } = data;
-        const markup = `
+  markupTrack(data: ICar) {
+    const { name, color, id } = data;
+    const markup = `
             <div class="car-track">
             <h3 class="car__title">${name}</h3>
             <div class="car__buttons">
             <button class="car__button car__button-select">select</button>
             <button class="car__button car__button-remove">remove</button>
+            <button class="carbutton carbutton-start">A</button>
+            <button class="carbutton carbutton-stop">B</button>
             </div>
     
             <div class="car" id="${id}">
@@ -247,16 +335,39 @@ export class CarTrack {
             </div>
         </div>
         `;
-        return markup;
-    }
-    createTrack(cars: Promise<ICar[]>) {
-        const trackList = document.querySelector('.trackList') as HTMLElement;
-        cars.then((data) => {
-            const res = data.map((elem) => {
-                const track = this.markupTrack(elem);
-                return track;
-            });
-            trackList.innerHTML = res.join('');
-        });
-    }
+    return markup;
+  }
+  createTrack(cars: Promise<ICar[]>) {
+    const trackList = document.querySelector('.trackList') as HTMLElement;
+    cars.then((data) => {
+      const res = data.map((elem) => {
+        const track = this.markupTrack(elem);
+        return track;
+      });
+      trackList.innerHTML = res.join('');
+    });
+  }
+  deleteCar(id: string) {
+    fetch(`http://127.0.0.1:3000/garage/${id}`, {
+      method: 'DELETE',
+    });
+  }
+  createCar(name: string, color: string) {
+    fetch(`http://127.0.0.1:3000/garage/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name, color }),
+    });
+  }
+  updateCar(name: string, color: string, id: string) {
+    fetch(`http://127.0.0.1:3000/garage/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name, color }),
+    });
+  }
 }
