@@ -20,6 +20,7 @@ generate.generateGarageListeners(carTrack, api, app);
 race.generateRaceListeners(carTrack, api);
 carTrack.createTrack(api.getCars<ICar[]>('http://127.0.0.1:3000/garage', app.garagePage));
 
+// carTrack.carHandler(api);
 // (async () => {
 //     let res = await api.startEngine('1');
 //     console.log(res, 'завели двигатель');

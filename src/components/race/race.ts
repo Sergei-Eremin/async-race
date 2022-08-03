@@ -47,6 +47,9 @@ export class Race {
       this.generateCars(carTrack);
       carTrack.createTrack(api.getCars<ICar[]>('http://127.0.0.1:3000/garage', 1));
       carTrack.updateGarageAmount(api);
+      setTimeout(()=>{
+        carTrack.carHandler(api);
+      }, 100)
     });
   }
 }

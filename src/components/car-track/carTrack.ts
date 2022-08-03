@@ -115,8 +115,8 @@ export class CarTrack {
             <div class="car__buttons">
             <button class="car__button car__button-select">select</button>
             <button class="car__button car__button-remove">remove</button>
-            <button class="carbutton button-start">A</button>
-            <button class="carbutton button-stop">B</button>
+            <button class="button-start">A</button>
+            <button class="button-stop" disabled>B</button>
             </div>
     
             <div class="car" id="${id}">
@@ -376,15 +376,41 @@ export class CarTrack {
         car?.classList.add('drive');
     }
     carHandler(api: API) {
-        const trackList = document.querySelector('.trackList') as HTMLElement;
-        trackList.addEventListener('click', async function (event) {
-            const target = event.target as HTMLElement;
-            if (target.tagName === 'BUTTON' && target.classList[1] === 'button-start') {
+        const carTracks = document.querySelectorAll('.car-track') as NodeList;
+        carTracks.forEach((element) => {
+            element.addEventListener('click', async (event) => {
+                const target = event.target as HTMLButtonElement;
                 const id = (event.target as HTMLElement).parentElement?.nextElementSibling?.id as string;
-                const { velocity, distance } = await api.startEngine(id);
-                const time = (distance / velocity / 1000).toFixed(1);
-                (event.target as HTMLElement).parentElement?.nextElementSibling?.classList.add('drive');
-            }
+                const car = (event.target as HTMLElement).parentElement?.nextElementSibling as HTMLElement;
+
+                const btnStart = target.closest('.car-track')?.querySelector('.button-start') as HTMLButtonElement;
+                const btnStop = target.closest('.car-track')?.querySelector('.button-stop') as HTMLButtonElement;
+                if (target.tagName === 'BUTTON' && target.className === 'button-start') {
+                    btnStart.disabled = true;
+                    const { velocity, distance } = await api.startEngine(id);
+                    const time = (distance / velocity / 1000).toFixed(1) as string;
+                    car?.classList.add('drive');
+                    car.style.cssText = `animation-duration: ${time}s;`;
+                    this.engineOperation(id, car, api);
+                    btnStop.disabled = false;
+                }
+                if (target.tagName === 'BUTTON' && target.className === 'button-stop') {
+                    btnStop.disabled = true;
+                    car?.classList.remove('drive');
+                    btnStart.disabled = false;
+                }
+            });
         });
+    }
+    async engineOperation(id: string, car: HTMLElement, api: API) {
+        try {
+            const result = await api.startDrive(id);
+            console.log(result, 'внутри трая');
+        } catch (error) {
+            console.log(error, 'ошибка в условии');
+            car.style.animationPlayState = 'paused';
+            const stopEngine = await api.stopEngine(id);
+            console.log(stopEngine, "не доехала, отправили на сервак стоп движка");
+        }
     }
 }

@@ -32,6 +32,5 @@ export class API {
             method: 'PATCH',
         })
             .then((data) => data.json())
-            .catch((er) => console.log(er));
     }
 }
