@@ -53,26 +53,11 @@ export class CarTrack {
       const btnNext = document.querySelector('.pagination__next') as HTMLButtonElement;
       const target = event.target as HTMLElement;
 
-      if (target.tagName === 'BUTTON') {
-        if (target.className === 'pagination__prev') {
-          if (btnPrev.disabled) {
-            alert('how you click disabled button??');
-          } else {
-            app.garagePage -= 1;
-          }
-        }
+      if (target.className === 'pagination__prev' && !btnPrev.disabled) app.garagePage -= 1;
+      if (target.className === 'pagination__next' && !btnNext.disabled) app.garagePage += 1;
 
-        if (target.className === 'pagination__next') {
-          if (btnNext.disabled) {
-            alert('how you click disabled button??');
-          } else {
-            app.garagePage += 1;
-          }
-        }
-
-        this.createTrack(api.getCars(app.garagePage));
-        setTimeout(() => this.carHandler(api), 100);
-      }
+      this.createTrack(api.getCars(app.garagePage));
+      setTimeout(() => this.carHandler(api), 100);
 
       this.paginationClickableButtons(app, api);
       this.updatePageNumber(app);
@@ -88,26 +73,20 @@ export class CarTrack {
     const btnPrev = document.querySelector('.pagination__prev') as HTMLButtonElement;
     const btnNext = document.querySelector('.pagination__next') as HTMLButtonElement;
 
-    if (app.garagePage === 1) {
-      btnPrev.disabled = true;
-    } else {
-      btnPrev.disabled = false;
-    }
+    app.garagePage === 1 ? (btnPrev.disabled = true) : (btnPrev.disabled = false);
 
     (async () => {
       const amount = await api.getAmountCars();
       const pages = Math.ceil(amount / app.tracksOnPage);
-      if (pages > app.garagePage) {
-        btnNext.disabled = false;
-      } else {
-        btnNext.disabled = true;
-      }
-      if (pages < app.garagePage) {
-        app.garagePage -= 1;
-        this.createTrack(api.getCars(app.garagePage));
-        this.updatePageNumber(app);
-        setTimeout(() => this.carHandler(api), 100);
-      }
+
+      pages > app.garagePage ? (btnNext.disabled = false) : (btnNext.disabled = true);
+
+      if (!(pages < app.garagePage)) return;
+
+      app.garagePage -= 1;
+      this.createTrack(api.getCars(app.garagePage));
+      this.updatePageNumber(app);
+      setTimeout(() => this.carHandler(api), 100);
     })();
   }
 
@@ -224,8 +203,7 @@ export class CarTrack {
       130 22 193 51 l64 29 -19 23 c-65 82 -198 227 -209 227 -7 0 -15 -4 -19 -9z" />
               </g>
           </svg>
-  
-  
+
           </div>
           <div class="finish">
           <?xml version="1.0" standalone="no"?>
@@ -385,8 +363,8 @@ export class CarTrack {
     carTracks.forEach((element) => {
       element.addEventListener('click', async (event) => {
         const target = event.target as HTMLButtonElement;
-        const id = (event.target as HTMLElement).parentElement?.nextElementSibling?.id as string;
-        const car = (event.target as HTMLElement).parentElement?.nextElementSibling as HTMLElement;
+        const car = target.parentElement?.nextElementSibling as HTMLElement;
+        const id = car.id as string;
 
         const btnStart = target.closest('.car-track')?.querySelector('.button-start') as HTMLButtonElement;
         const btnStop = target.closest('.car-track')?.querySelector('.button-stop') as HTMLButtonElement;
@@ -403,27 +381,21 @@ export class CarTrack {
     });
   }
 
-  async engineOperation(
-    id: string,
-    car: HTMLElement,
-    api: API,
-    btnStart: HTMLButtonElement,
-    btnStop: HTMLButtonElement
-  ) {
-    btnStart.disabled = true;
-    const { velocity, distance } = await api.startEngine(id);
+  async engineOperation(id: string, car: HTMLElement, api: API, start: HTMLButtonElement, stop: HTMLButtonElement) {
+    start.disabled = true;
+    const { velocity, distance } = await api.switchEngineState(id, 'started');
     const time = (distance / velocity / 1000).toFixed(1);
     car?.classList.add('drive');
     car.style.cssText = `animation-duration: ${time}s;`;
-    btnStop.disabled = false;
+    stop.disabled = false;
 
     try {
-      const { success } = await api.startDrive(id);
+      const { success } = await api.switchEngineState(id, 'drive');
       return { time, success, id };
     } catch (error) {
       if (error instanceof Error) {
         car.style.animationPlayState = 'paused';
-        await api.stopEngine(id);
+        await api.switchEngineState(id, 'drive');
         // console.log(error.message);
       }
     }

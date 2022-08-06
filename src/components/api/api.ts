@@ -1,3 +1,5 @@
+import { IWinner, IWinnerWithCars } from '../../types';
+
 export class API {
   BASE_URL = 'http://127.0.0.1:3000';
 
@@ -17,18 +19,8 @@ export class API {
     return data.length;
   }
 
-  async startEngine(id: string) {
-    const data = await fetch(`${this.BASE_URL}/engine?id=${id}&status=started`, { method: 'PATCH' });
-    return data.json();
-  }
-
-  async stopEngine(id: string) {
-    const data = await fetch(`${this.BASE_URL}/engine?id=${id}&status=stopped`, { method: 'PATCH' });
-    return data.json();
-  }
-
-  async startDrive(id: string) {
-    const data = await fetch(`${this.BASE_URL}/engine?id=${id}&status=drive`, { method: 'PATCH' });
+  async switchEngineState(id: string, status: 'started' | 'stopped' | 'drive') {
+    const data = await fetch(`${this.BASE_URL}/engine?id=${id}&status=${status}`, { method: 'PATCH' });
     return data.json();
   }
 
@@ -57,8 +49,30 @@ export class API {
     return data.json();
   }
 
-  async getWinners(page: number = 1, limit: number = 10, sort: string = 'id', order: string = 'ASC') {
+  async getWinners(page: number = 1, limit: number = 10, sort: string = 'id', order: 'ASC' | 'DESC' = 'ASC') {
     const data = await fetch(`${this.BASE_URL}/winners?_page=${page}&_limit=${limit}&_sort=${sort}&_order=${order}`);
     return data.json();
+  }
+
+  async getWinnersWithCars(page: number = 1, limit: number = 10, sort: string = 'id', order: 'ASC' | 'DESC' = 'ASC') {
+    const resultArr: IWinnerWithCars[] = [];
+
+    const winnerData: IWinner[] = await this.getWinners(page, limit, sort, order);
+
+    winnerData.forEach(async (winnerElem) => {
+      const carData = await this.getCar(winnerElem.id.toString());
+
+      const resultDataObj = {
+        id: winnerElem.id,
+        wins: winnerElem.wins,
+        time: winnerElem.time,
+        name: carData.name,
+        color: carData.color,
+      };
+
+      resultArr.push(resultDataObj);
+    });
+
+    return resultArr;
   }
 }
