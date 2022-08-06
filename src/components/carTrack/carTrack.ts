@@ -384,6 +384,8 @@ export class CarTrack {
   async engineOperation(id: string, car: HTMLElement, api: API, start: HTMLButtonElement, stop: HTMLButtonElement) {
     start.disabled = true;
     const { velocity, distance } = await api.switchEngineState(id, 'started');
+    console.log(await api.switchEngineState(id, 'started'), "1231");
+    
     const time = (distance / velocity / 1000).toFixed(1);
     car?.classList.add('drive');
     car.style.cssText = `animation-duration: ${time}s;`;
@@ -391,12 +393,14 @@ export class CarTrack {
 
     try {
       const { success } = await api.switchEngineState(id, 'drive');
+      console.log(success.status, "статус в двигателе");
+      
       return { time, success, id };
     } catch (error) {
       if (error instanceof Error) {
+        // console.log(error.message, "сообщение ошибки сервера");
         car.style.animationPlayState = 'paused';
-        await api.switchEngineState(id, 'drive');
-        // console.log(error.message);
+        await api.switchEngineState(id, 'stopped');
       }
     }
   }

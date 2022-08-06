@@ -183,7 +183,7 @@ export class Generate {
         console.log(arrOfWinnersWithCars);
 
         const app = document.querySelector('.app') as HTMLElement;
-        app.innerHTML = winners.createTabel(arrOfWinnersWithCars);
+        app.innerHTML = winners.createTabel();
 
         const tableBody = document.querySelector('.table__body');
         setTimeout(() => {

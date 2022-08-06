@@ -3,7 +3,7 @@ import { IWinnerWithCars } from '../../types';
 import './table.scss';
 
 export class Winners {
-  createTabel(arrOfRows: IWinnerWithCars[]) {
+  createTabel() {
     const tableLayout = `
     <table class="table">
       <tbody class="table__body">
