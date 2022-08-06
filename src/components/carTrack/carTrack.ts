@@ -74,6 +74,7 @@ export class CarTrack {
     const btnNext = document.querySelector('.pagination__next') as HTMLButtonElement;
 
     app.garagePage === 1 ? (btnPrev.disabled = true) : (btnPrev.disabled = false);
+    // app.winnerPage === 1 ? (btnPrev.disabled = true) : (btnPrev.disabled = false);
 
     (async () => {
       const amount = await api.getAmountCars();

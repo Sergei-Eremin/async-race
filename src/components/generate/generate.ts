@@ -183,11 +183,15 @@ export class Generate {
         console.log(arrOfWinnersWithCars);
 
         const app = document.querySelector('.app') as HTMLElement;
-        app.innerHTML = winners.createTabel();
+        app.innerHTML = `${winners.createTabel()} ${winners.createPaginationBlock()}`;
 
         const tableBody = document.querySelector('.table__body');
         setTimeout(() => {
             arrOfWinnersWithCars.forEach((elem, i) => tableBody?.append(winners.createTr(elem, i)));
         }, 100);
+    }
+
+    generateWinnersListeners(api: API, app: App){
+        
     }
 }
