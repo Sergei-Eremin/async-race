@@ -1,5 +1,3 @@
-// import '~normalize.css';
-
 import { App } from './components/app/app';
 import { Generate } from './components/generate/generate';
 import { Control } from './components/control/control';
@@ -29,36 +27,31 @@ const garageBtn = document.querySelector('.nav__button-garage') as HTMLButtonEle
 const winnerBtn = document.querySelector('.nav__button-winners') as HTMLButtonElement;
 
 garageBtn?.addEventListener('click', () => {
-    const appElement = document.querySelector('.app') as HTMLElement;
-    appElement.innerHTML = '';
-    generate.generateGarage(control, race, carTrack, api, app);
-    generate.generateGarageListeners(carTrack, api, app);
-    race.generateRaceListeners(carTrack, api, app);
-    carTrack.createTrack(api.getCars(app.garagePage));
-    garageBtn.disabled = true;
-    winnerBtn.disabled = false;
+  const appElement = document.querySelector('.app') as HTMLElement;
+  appElement.innerHTML = '';
+  generate.generateGarage(control, race, carTrack, api, app);
+  generate.generateGarageListeners(carTrack, api, app);
+  race.generateRaceListeners(carTrack, api, app);
+  carTrack.createTrack(api.getCars(app.garagePage));
+  garageBtn.disabled = true;
+  winnerBtn.disabled = false;
+  setTimeout(() => {
+    generate.inputListeners(app);
+    generate.inputsFiller(app, api, carTrack);
+  }, 200);
 });
-garageBtn.click();
+setTimeout(() => garageBtn.click(), 500);
 
 winnerBtn.addEventListener('click', () => {
-    garageBtn.disabled = false;
-    winnerBtn.disabled = true;
-
-    const appElement = document.querySelector('.app') as HTMLElement;
-    appElement.innerHTML = '';
-
-    generate.generateWinners(winners, api);
+  garageBtn.disabled = false;
+  winnerBtn.disabled = true;
+  const appElement = document.querySelector('.app') as HTMLElement;
+  appElement.innerHTML = '';
+  generate.generatePageWinners(api, app);
+  generate.generateWinners(winners, api, app, app.sortValue, app.sortOrder);
+  const appContainer = document.querySelector('.app') as HTMLElement;
+  appContainer.innerHTML = winners.createTable();
+  winners.isClickablePagination(app, api);
+  generate.generateWinnersListeners(winners, api, app, carTrack);
+  winners.sortListener(app, generate, api, winners);
 });
-
-// carTrack.carHandler(api);
-// (async () => {
-//     let res = await api.startEngine('1');
-//     console.log(res, 'завели двигатель');
-//     let dr = await api.startDrive('1');
-//     console.log(dr, 'ну чё народ, погнали нахуй?');
-//     let stop = await api.stopEngine('1');
-//     console.log(stop, 'остановили');
-// })();
-// setTimeout(()=>{
-//     carTrack.drive('5', "3");
-// } ,2000)
