@@ -1,17 +1,23 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const path = require('path');
+const webpack = require('webpack');
 const { merge } = require('webpack-merge');
+const path = require('path');
+const CopyPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const baseConfig = {
     entry: path.resolve(__dirname, './src/index.ts'),
+    output: {
+        filename: 'index.js',
+        path: path.resolve(__dirname, './dist'),
+    },
     mode: 'development',
     module: {
         rules: [
             {
                 test: /\.svg$/,
-                use: 'url-loader',
+                use: 'file-loader',
             },
             {
                 test: /\.tsx?$/,
@@ -27,11 +33,10 @@ const baseConfig = {
     resolve: {
         extensions: ['.ts', '.js'],
     },
-    output: {
-        filename: 'index.js',
-        path: path.resolve(__dirname, './dist'),
-    },
     plugins: [
+        new CopyPlugin({
+            patterns: [{ from: path.resolve(__dirname, 'src/assets/'), to: './' }],
+        }),
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, './src/index.html'),
             filename: 'index.html',
