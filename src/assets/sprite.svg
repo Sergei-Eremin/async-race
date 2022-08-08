@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><svg xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink">
-    <symbol id="car" viewBox="0 0 1280.000000 640.000000">
+    <symbol id="car" viewBox="0 0 1280.000000 640.000000" xmlns="http://www.w3.org/2000/svg">
         <g transform="translate(0.000000,640.000000) scale(0.100000,-0.100000)">
             <path d="M3525 5341 c-72 -18 -79 -28 -90 -121 -4 -30 -11 -62 -16 -71 -4 -9
       -97 -51 -206 -94 -774 -304 -1348 -540 -1603 -661 -163 -77 -222 -91 -421
@@ -90,7 +90,7 @@
         </g>
     </symbol>
     
-    <symbol id="finish" viewBox="0 0 1280.000000 640.000000">
+    <symbol id="finish" viewBox="0 0 1280.000000 640.000000" xmlns="http://www.w3.org/2000/svg">
         <g transform="translate(0.000000,640.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none">
               <path d="M9025 5815 c-11 -13 -112 -124 -225 -247 -260 -284 -2406 -2669
           -2425 -2695 -1 -2 -58 61 -126 139 -352 404 -1854 2109 -2129 2417 -173 194
