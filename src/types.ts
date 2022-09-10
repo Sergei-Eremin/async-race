@@ -14,3 +14,17 @@ export interface IWinnerWithCars extends IWinner {
   color: string;
   name: string;
 }
+
+export interface IStartEngine {
+  velocity: number;
+  distance: number;
+}
+
+export interface IStopEngine {
+  velocity: number;
+  distance: number;
+}
+
+export interface IStartDrive {
+  success: boolean;
+}

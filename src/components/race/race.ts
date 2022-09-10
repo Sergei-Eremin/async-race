@@ -3,7 +3,7 @@ import { App } from '../app/app';
 import { CarTrack } from '../carTrack/carTrack';
 
 export class Race {
-  generateButtons() {
+  generateButtons(): string {
     return `
         <div class="fields__buttons">
           <button class="fields__button fields__button-start">Race</button>
@@ -12,7 +12,7 @@ export class Race {
         </div>
         `;
   }
-  generateCars(carTrack: CarTrack, count = 100) {
+  generateCars(carTrack: CarTrack, count = 100): void {
     const carNames = [
       'Lada',
       'Toyota',
@@ -63,7 +63,7 @@ export class Race {
       carTrack.createCar(car, `#${color}`);
     }
   }
-  generateRaceListeners(carTrack: CarTrack, api: API, app: App) {
+  generateRaceListeners(carTrack: CarTrack, api: API, app: App): void {
     const generateCarsButton = document.querySelector('.fields__button-generate');
     generateCarsButton?.addEventListener('click', () => {
       this.generateCars(carTrack);

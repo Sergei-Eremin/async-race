@@ -2,7 +2,7 @@ import { Race } from '../race/race';
 import { CarTrack } from '../carTrack/carTrack';
 
 export class Control {
-  generateControl(race: Race, carTrack: CarTrack) {
+  generateControl(race: Race, carTrack: CarTrack): void {
     const field = document.createElement('div');
     field.classList.add('fields');
     (document.querySelector('.app') as HTMLElement).append(field);

@@ -19,7 +19,7 @@ export class App {
     this.selectedCarData = { name: '', color: '#000000', id: '' };
     this.createCarData = { name: '', color: '#000000' };
   }
-  get garagePage() {
+  get garagePage(): number {
     return this.garagePageCounter;
   }
   set garagePage(pageNumber: number) {
@@ -30,7 +30,7 @@ export class App {
     this.garagePageCounter = pageNumber;
   }
 
-  get winnersPage() {
+  get winnersPage(): number {
     return this.winnersPageCounter;
   }
   set winnersPage(pageNumber: number) {
@@ -40,20 +40,20 @@ export class App {
     }
     this.winnersPageCounter = pageNumber;
   }
-  get tracksOnPage() {
+  get tracksOnPage(): number {
     return this.tracksOnPageAmount;
   }
-  get winnersOnPage() {
+  get winnersOnPage(): number {
     return this.winnersOnPageAmount;
   }
-  toggleOrder() {
+  toggleOrder(): void {
     if (this.sortOrder === 'ASC') {
       this.sortOrder = 'DESC';
     } else {
       this.sortOrder = 'ASC';
     }
   }
-  get selectedCar() {
+  get selectedCar(): { name: string; color: string; id: string } {
     return this.selectedCarData;
   }
 
@@ -62,7 +62,7 @@ export class App {
     console.log('changed', this.selectedCarData);
   }
 
-  get createdCar() {
+  get createdCar(): { name: string; color: string } {
     return this.createCarData;
   }
 

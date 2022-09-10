@@ -12,6 +12,7 @@ export class CarTrack {
         </div>
         `;
   }
+
   updateInputs() {
     return `
         <div class="field__update update">
@@ -21,6 +22,7 @@ export class CarTrack {
         </div>
         `;
   }
+
   generateTrackWrapper(api: API, app: App) {
     const main = document.createElement('main');
     main.classList.add('garage');
@@ -42,6 +44,7 @@ export class CarTrack {
     pagination.classList.add('pagination');
     main.append(page, h1, trackList, pagination);
   }
+
   paginationHandler(api: API, app: App) {
     const pagination = document.querySelector('.pagination');
     pagination?.addEventListener('click', (event) => {
@@ -61,10 +64,12 @@ export class CarTrack {
       (document.querySelector('.fields__button-start') as HTMLButtonElement).disabled = false;
     });
   }
+
   updatePageNumber(app: App, number = app.garagePage) {
     const page = document.querySelector('.page__number') as HTMLSpanElement;
     page.innerText = String(number);
   }
+
   paginationClickableButtons(app: App, api: API, num = app.garagePage) {
     const btnPrev = document.querySelector('.pagination__prev') as HTMLButtonElement;
     const btnNext = document.querySelector('.pagination__next') as HTMLButtonElement;
@@ -83,6 +88,7 @@ export class CarTrack {
       }
     })();
   }
+
   updateGarageAmount(api: API) {
     const h1 = document.querySelector('h1') as HTMLElement;
     (async () => {
@@ -112,6 +118,7 @@ export class CarTrack {
       </div>
       `;
   }
+
   createTrack(cars: Promise<ICar[]>) {
     const trackList = document.querySelector('.trackList') as HTMLElement;
     cars.then((data) => {
@@ -119,6 +126,7 @@ export class CarTrack {
       trackList.innerHTML = res;
     });
   }
+
   deleteCar(id: string) {
     fetch(`http://127.0.0.1:3000/garage/${id}`, {
       method: 'DELETE',
@@ -127,6 +135,7 @@ export class CarTrack {
       method: 'DELETE',
     });
   }
+
   createCar(name: string, color: string) {
     fetch(`http://127.0.0.1:3000/garage/`, {
       method: 'POST',
@@ -136,6 +145,7 @@ export class CarTrack {
       body: JSON.stringify({ name, color }),
     });
   }
+
   updateCar(name: string, color: string, id: string) {
     fetch(`http://127.0.0.1:3000/garage/${id}`, {
       method: 'PUT',
@@ -145,6 +155,7 @@ export class CarTrack {
       body: JSON.stringify({ name, color }),
     });
   }
+
   carHandler(api: API) {
     const carTracks = document.querySelectorAll('.car-track') as NodeList;
     carTracks.forEach((element) => {
@@ -166,6 +177,7 @@ export class CarTrack {
       });
     });
   }
+
   async engineOperation(
     id: string,
     car: HTMLElement,

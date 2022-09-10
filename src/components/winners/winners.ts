@@ -5,7 +5,7 @@ import { Generate } from '../generate/generate';
 import './table.scss';
 
 export class Winners {
-  createTable() {
+  createTable(): string {
     return `
     <table class="table">
       <thead>
@@ -27,7 +27,7 @@ export class Winners {
     </div>`;
   }
 
-  createRow(obj: IWinnerWithCars, index: number, app: App) {
+  createRow(obj: IWinnerWithCars, index: number, app: App): string {
     const { color, name, wins, time } = obj;
     return `
       <td class="table__ceil">${app.winnersOnPage * (app.winnersPage - 1) + index + 1}</td>
@@ -40,13 +40,13 @@ export class Winners {
     `;
   }
 
-  createTr(winnerObj: IWinnerWithCars, index: number, app: App) {
+  createTr(winnerObj: IWinnerWithCars, index: number, app: App): HTMLTableRowElement {
     const tr = document.createElement('tr');
     tr.classList.add('table__row');
     tr.innerHTML = this.createRow(winnerObj, index, app);
     return tr;
   }
-  isClickablePagination(app: App, api: API) {
+  isClickablePagination(app: App, api: API): void {
     const btnPrev = document.querySelector('.pagination__prev') as HTMLButtonElement;
     const btnNext = document.querySelector('.pagination__next') as HTMLButtonElement;
     app.winnersPage === 1 ? (btnPrev.disabled = true) : (btnPrev.disabled = false);
@@ -56,7 +56,7 @@ export class Winners {
       pages > app.winnersPage ? (btnNext.disabled = false) : (btnNext.disabled = true);
     })();
   }
-  sortListener(app: App, generate: Generate, api: API, winners: Winners) {
+  sortListener(app: App, generate: Generate, api: API, winners: Winners): void {
     const header = document.querySelector('thead tr');
     header?.addEventListener('click', (event) => {
       const target = event.target as HTMLElement;
